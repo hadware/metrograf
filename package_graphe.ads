@@ -4,6 +4,7 @@ with Ada.Integer_Text_Io;
 use Ada.Integer_Text_Io;
 with Ada.Strings.Unbounded;
 use Ada.Strings.Unbounded;
+with Ada.Containers.Doubly_Linked_Lists;
 
 
 package Package_Graphe is
@@ -14,7 +15,9 @@ package Package_Graphe is
    end record;
      
    type P_Node is access Node;
-   type Node_Array is array (Integer range <>) of Node;
+   type Node_Id_Array is array (Integer range <>) of Integer;
+   
+   package Node_List is new Ada.Containers.Doubly_Linked_Lists(Integer);
    
    type Vertex is record
       Source : Integer;
@@ -24,14 +27,13 @@ package Package_Graphe is
    end record;
    
    type P_Vertex is access Vertex;
-   type Vertex_Array is array (Integer range <>) of Vertex;
-   
- 
- --  package List is new Ada.Containers.Doubly_Linked_Lists(vertex);
-  -- type Vertex_Lt is new List.List;
-      
+   type Vertex_Id_Array is array (Integer range <>) of Integer;
+    
+   package V_List is new Ada.Containers.Doubly_Linked_Lists(Integer);
+       
    type Graphe is array (Integer range <>, Integer range <>) of P_vertex; 
    
-   procedure Get_Out_Put_Vertex ( N : integer; Array_Dest : out Node_Array);
+   procedure Get_Out_Put_Vertex (Input_graphe: Graphe ; Id_Node : integer; List_Dest : out Node_List.List);
    
 end;
+
