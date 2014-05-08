@@ -15,13 +15,13 @@ package Package_Graphe is
    end record;
      
    type P_Node is access Node;
-   type Node_Id_Array is array (Integer range <>) of Integer;
+   type Node_Array is array (Integer range <>) of P_Node;
    
    package Node_List is new Ada.Containers.Doubly_Linked_Lists(Integer);
    
    type Vertex is record
-      Source : Integer;
-      Destination : Integer;
+      Source : P_Node;
+      Destination : P_Node;
       Line : Unbounded_String;
       Cost : float;
    end record;

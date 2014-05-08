@@ -6,7 +6,7 @@ package body Package_Graphe is
    begin
       for I in Input_graphe'Range loop
 	 if Input_graphe(Id_Node,I) /= null then
-	    Node_List.Append(List_Dest, Input_graphe(Id_Node,I).Destination);
+	    Node_List.Append(List_Dest, Input_graphe(Id_Node,I).Destination.id);
 	 end if;
       end loop;
    end;
