@@ -14,7 +14,7 @@ package Package_Graphe is
    end record;
      
    type P_Node is access Node;
-   type Node_Array is array (Integer range <>) of P_Node;
+   type Node_Array is array (Integer range <>) of Node;
    
    type Vertex is record
       Source : Integer;
@@ -24,7 +24,7 @@ package Package_Graphe is
    end record;
    
    type P_Vertex is access Vertex;
-   type Vertex_Array is array (Integer range <>) of P_Vertex;
+   type Vertex_Array is array (Integer range <>) of Vertex;
    
  
  --  package List is new Ada.Containers.Doubly_Linked_Lists(vertex);
@@ -32,6 +32,6 @@ package Package_Graphe is
       
    type Graphe is array (Integer range <>, Integer range <>) of P_vertex; 
    
-   procedure Get_Out_Put_Vertex ( N : P_Node; Array_Dest : out Node_Array);
+   procedure Get_Out_Put_Vertex ( N : integer; Array_Dest : out Node_Array);
    
 end;
