@@ -4,14 +4,18 @@ with Ada.Integer_Text_Io;
 use Ada.Integer_Text_Io;
 with Ada.Strings.Unbounded;
 use Ada.Strings.Unbounded;
+with Ada.Containers.Doubly_Linked_Lists;
 
-package Graph is
+package Graphe is
+  
    
-   type Graphe is array (0 .. J) of P_node; 
+   
+   type Vertex_List is private;
    
    type Node is record
       Id : Integer;
       Station_Name : String;
+      
    end record;
    
    type P_Node is access Node;
@@ -19,9 +23,13 @@ package Graph is
    type vertex is record
       Source : P_Node;
       Destination : P_Node;
-      Ligne : Characters;
-      Cout : integer
+      Ligne : String;
+      Cout : Integer;
    end record;
    
+   package List is new Ada.Containers.Doubly_Linked_Lists(vertex);
+   type Vertex_List is new List.List;
+      
+   type Graphe is array (Integer range <>) of P_node; 
    
 end;
