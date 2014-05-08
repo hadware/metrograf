@@ -17,8 +17,8 @@ package Package_Graphe is
    type Node_Array is array (Integer range <>) of P_Node;
    
    type Vertex is record
-      Source : P_Node;
-      Destination : P_Node;
+      Source : Integer;
+      Destination : Integer;
       Line : Unbounded_String;
       Cost : float;
    end record;
