@@ -8,32 +8,33 @@ with Ada.Containers.Doubly_Linked_Lists;
 
 
 package Package_Graphe is
-        
+
    type Node is record
       Id : Integer;
       Station_Name : Unbounded_String;
    end record;
-     
+
    type P_Node is access Node;
    type Node_Array is array (Integer range <>) of P_Node;
-   
+
    package Node_List is new Ada.Containers.Doubly_Linked_Lists(Integer);
-   
+
    type Vertex is record
-      Source : P_Node;
-      Destination : P_Node;
+      Source : Natural; --id de la source de cette arête
+      Destination : Natural; --id de la destination de cette arête
       Line : Unbounded_String;
-      Cost : float;
+      Cost : Float;
    end record;
-   
+
    type P_Vertex is access Vertex;
-   type Vertex_Id_Array is array (Integer range <>) of Integer;
-    
+   type Vertex_Array is array (Integer range <>) of Vertex;
+
    package V_List is new Ada.Containers.Doubly_Linked_Lists(Integer);
-       
-   type Graphe is array (Integer range <>, Integer range <>) of P_vertex; 
-   
-   procedure Get_Out_Put_Vertex (Input_graphe: Graphe ; Id_Node : integer; List_Dest : out Node_List.List);
-   
+
+   type Graphe is array (Integer range <>, Integer range <>) of P_Vertex;
+
+
+   procedure Get_Output_Vertex (Input_graphe: Graphe ; Id_Node : integer; List_Dest : out Node_List.List);
+
 end;
 
