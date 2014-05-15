@@ -9,7 +9,7 @@ package body Dijkstra is
 
    procedure Insert_In_Sorted_List(Input_List :in out Natural_List.List; Distances : T_Cost_Array ; Element_Id : Natural) is
 
-      Cursor : Natural_List.Cursor;
+      Current_Element : Natural_List.Cursor;
    begin
 
       --vérification si l'élément existe déjà ou non
@@ -19,7 +19,7 @@ package body Dijkstra is
       end if;
 
       Cursor := Natural_List.First(Input_List);
-      While(Natural_List.Element(Cursor) < Distances(Element_Id)) loop -- On trouve l'élément qui a une distance tout juste plus grande que l'élément à insérer
+      While(Distances(Natural_List.Element(Cursor)) < Distances(Element_Id)) loop -- On trouve l'élément qui a une distance tout juste plus grande que l'élément à insérer
             Natural_List.Next(Cursor);
       end loop;
       Natural_List.Insert(Input_List, Cursor, Element_Id);
@@ -30,9 +30,9 @@ package body Dijkstra is
 
    begin
 
-      for I in Graphe'Range(1) loop
+      for I in Input_Graphe'Range loop
 
-         If Graphe(Source_Node_Id, I) /= Null then
+         If Input_Graphe(Source_Node_Id, I) /= Null then
             Natural_List.Append(Connected_Node_List, I);
          end if;
 
@@ -55,7 +55,7 @@ package body Dijkstra is
    begin
 
       -- Initiatilisation de l'algo
-      Distance(Source_Id) := 0.0 ;
+      Distances(Source_Id) := 0.0 ;
       Natural_List.Append(Node_Queue, Source_Id);
 
       --
@@ -68,7 +68,7 @@ package body Dijkstra is
          Cursor_Connected_List := Natural_List.First(Connected_Node_List); -- on lace le curseur sur la tête
 
 
-         While (Cursor_Connected_List /= No_Element) loop
+         While (Cursor_Connected_List /= Natural_List.No_Element) loop
 
             -- Test du coût de la distance
             If Distance(Buffer_Node_ID) + Input_Graph(Buffer_Node_ID, Natural_List.Element(Cursor_Connected_List)).Cost < Distance(Natural_List.Element(Cursor_Connected_List)) then
@@ -81,13 +81,14 @@ package body Dijkstra is
 
 
       end loop;
-
+      
+      return Distances;
 
    end Dijkstra;
 
    -- Affiche le chemin le plus court entre 2 noeuds
    procedure AffichageDijkstra (Input_Graph : Graphe; Source : Node; Destination : Node; Input_Node_Array : P_Node_Array) is
-      Node_Number : Natural := Input_Graph'Length(1);
+      Node_Number : Natural := Input_Graph'Length;
       Node_Queue : Natural_List.List;
       Cursor : Natural_List.Cursor;
       Distances : T_Cost_Array(Input_Graph'Range(1)) := (others => Float'Last); --on met toutes les distances à l'infini
@@ -132,5 +133,6 @@ package body Dijkstra is
       end loop;
 
       --affichage du chemin
-      Display_Path(Previous_Nodes, Distances, Source, Destination, Input_Node_Array,
+      Display_Path(Previous_Nodes, Distances, Source, Destination, Input_Node_Array,Input_Graph);
+   End;   
 end;
