@@ -52,7 +52,7 @@ package body Parser is
       Output_Vertex_Array : Vertex_Array(1..Vertex_Number);
 
       --pour les expressions régulières
-      Regexp_Vertex_Value : String := "[ ]*([0-9]*)[ ]+([0-9]*)[ ]+([0-9]*\.?[0-9]*)[ ]+(.*)[ ]*"; -- pour matcher les lignes des vertices
+      Regexp_Vertex_Value : String := "[ ]*([0-9]*)[ ]+([0-9]*)[ ]+([0-9]*\.?[0-9eE+-]*)[ ]+(.*)[ ]*"; -- pour matcher les lignes des vertices
       Compiled_Regexp : Pattern_Matcher := Compile(Regexp_Vertex_Value); -- Précompilée pour ne le faire qu'une seule fois
       Matches : Match_Array(0..4); -- Tableau des bornes des chaines "matchées" dans la chaine cible
 
