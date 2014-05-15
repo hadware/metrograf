@@ -1,7 +1,7 @@
 with Bellmanford;
 use Bellmanford;
---with Dijkstra;
---use Dijkstra;
+with Dijkstra;
+use Dijkstra;
 with Package_Graphe;
 use Package_Graphe;
 with Ada.Command_Line;
@@ -71,7 +71,8 @@ begin
 	 AffichageBellmanFord(PGraphe.all, Node_A.all(Source_Id), Node_A.all(Destination_Id),Node_A);
       elsif Argument(2) = "d" then
 	 Load_Graph_From_File(Argument(1), PGraphe, Node_A, Vertex_A);
-	 --AffichageDijkstra(PGraphe.all, Node_A.all(Source_Id), Node_A.all(Source_Id),Node_A);
+	 Get_Id(Node_A'Last, Source_Id, Destination_Id);
+	 AffichageDijkstra(PGraphe.all, Node_A.all(Source_Id), Node_A.all(Destination_Id),Node_A);
       else
 	 raise error_command ;
       end if;

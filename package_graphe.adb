@@ -9,7 +9,9 @@ package body Package_Graphe is
    begin
       while Index /= Source_Id loop
 	 Index := Previous_Node_List(Index);
-	 L_Node.Prepend(Way,index);
+	 if Index = 0 then exit;
+	 end if;
+	   L_Node.Prepend(Way,Index);
       end loop;
    end Search_Way;
    -- ==========================================================================
@@ -62,20 +64,25 @@ package body Package_Graphe is
    begin
       -- Renvoie dans Way les Id dans l'ordre du chemin le plus court
       Search_Way (Source.Id, Destination.Id, Previous_Node_List, Way);
+      if Cost_Array(Destination.Id) /= Float'Last then
+	 Put_Line("=============== Résultat ==============="); 
+	 Put("Chemin le plus court entre ");
+	 Put(To_String(Source.Station_Name) & " (" & Integer'Image(Source.Id) & ") et ");
+	 Put_line(To_String(Destination.Station_Name) & " (" & Integer'Image(Destination.Id) & ") : ");
+	 Put_Line("Depart : " & To_String(Source.Station_Name) & " (" & Integer'Image(Source.Id) & ")");
       
-      Put_Line("=============== Résultat ==============="); 
-      Put("Chemin le plus court entre ");
-      Put(To_String(Source.Station_Name) & " (" & Integer'Image(Source.Id) & ") et ");
-      Put_line(To_String(Destination.Station_Name) & " (" & Integer'Image(Destination.Id) & ") : ");
-      Put_Line("Depart : " & To_String(Source.Station_Name) & " (" & Integer'Image(Source.Id) & ")");
+	 -- Affichage des correspondances
+	 Way.Iterate(Print_Way'Access);
+	 Put_Line(Integer'Image(Station_Nb) & " station(s)");   
       
-      -- Affichage des correspondances
-      Way.Iterate(Print_Way'Access);
-      Put_Line(Integer'Image(Station_Nb) & " station(s)");   
-      
-      Put_Line("Arrivée : " & To_String(Destination.Station_Name) & " (" & Integer'Image(Destination.Id) & ")" );
-      Put_Line("cout du chemin : " & Float'Image(Cost_Array(Destination.id)));
-      Put_Line("=======================================");
+	 Put_Line("Arrivée : " & To_String(Destination.Station_Name) & " (" & Integer'Image(Destination.Id) & ")" );
+	 Put_Line("cout du chemin : " & Float'Image(Cost_Array(Destination.id)));
+	 Put_Line("=======================================");
+      else
+	 Put_Line("=======================================");
+	 Put_Line ("Aucun chemin trouvé");
+	 Put_Line("=======================================");
+      end if;
    end;
    -- ==========================================================================
    
