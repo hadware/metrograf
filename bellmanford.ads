@@ -16,8 +16,8 @@ package BellmanFord is
    
    
    -- Affiche le chemin le plus court entre 2 noeuds
-   procedure AffichageBellmanFord (Input_Graphe : Graphe; Source : Node; Destination : Node; Node_A : P_Node_Array);
+   procedure AffichageBellmanFord (Input_Graphe : in out Graphe; Source : Node; Destination : Node; Node_A : in out  P_Node_Array);
    
-   
+   procedure Free_Memory(PGraphe : out P_Graphe; PNode_Array : out  P_Node_Array; PVertex_Array : out P_Vertex_Array);
    
 end;
