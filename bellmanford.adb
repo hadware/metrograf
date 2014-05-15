@@ -28,6 +28,7 @@ package body BellmanFord is
 	 Free_Graphe(PGraphe);
       end if;
    end;
+   
    -- ==========================================================================
    -- Calcule tous les chemins minimum en partant de la source
    -- Rempli un tableau contenant le noeud précédant chaque noeud par le chemin calculé
@@ -91,70 +92,13 @@ package body BellmanFord is
    -- ==========================================================================
    -- Affiche le chemin le plus court par l'algo de Bellman-Ford
    -- ==========================================================================
-   procedure AffichageBellmanFord (Input_graphe : in out  Graphe; Source : Node; Destination : Node; Node_A : in out  P_Node_Array) is
+   procedure AffichageBellmanFord (Input_graphe : Graphe; Source : Node; Destination : Node; Node_A : P_Node_Array) is
       Cost_Array : T_Cost_Array(1..Input_Graphe'length);
       Previous_Node_List : Node_Id_Array(1..Input_Graphe'length);
-      Way : L_Node.List;
-      Current_Line : Unbounded_String;
-      Station_Nb: integer := 0;
-      Position : L_Node.Cursor;
-      
-      -- ==========================================================================
-      -- Affiche le chemin
-      -- ==========================================================================
-      procedure Print_Way (Position : in L_Node.Cursor) is
-	 Current_Node : Node := Node_A(L_Node.Element(Position));
-	 Previous_Node : Node;
-      begin
-	 
-	 -- Test si le Previous_Node existe
-	 if L_Node.Has_Element(L_Node.Previous(Position)) then
-	    Previous_Node := Node_A(L_Node.Element(L_Node.Previous(Position)));
-	 elsif L_Node.Has_Element(L_Node.Next(Position)) then
-	    -- Initialise la ligne si c'est le 1er element
-	    Current_Line := Input_Graphe(Current_Node.Id,Node_A(L_Node.Element(L_Node.Next(Position))).id).Line;
-	 end if;
-	 
-	 
-	 -- Affiche une correspondance
-	 if Previous_Node.Station_Name = Current_Node.Station_Name  then
-	    Put_Line(Integer'Image(Station_Nb-1) & " station(s)");
-	    Put("changement a ");
-	    Put(To_String(Previous_Node.Station_Name) &" (" & Integer'Image(Previous_Node.Id) & ") ligne " & To_String(Current_Line));
-	    
-	    --test l'existance de l'élement suivant et enregistre la ligne courante
-	    if L_Node.Has_Element(L_Node.Next(Position)) then
-	       Current_Line := Input_Graphe(Current_Node.Id,Node_A(L_Node.Element(L_Node.Next(Position))).id).Line;
-	    end if;
-	    
-	    Put_Line(" --> " & " (" & Integer'Image(Current_Node.Id) & ") ligne " & To_String(Current_Line));
-	    Station_Nb := 0;
-	 end if;
-	 Station_Nb := Station_Nb + 1;
-	 
-      end;
-      -- ==========================================================================
       
    begin
-      
       Bellman(Input_Graphe, Source, Cost_Array, Previous_Node_List);
-      Search_Way (Source.Id, Destination.Id, Previous_Node_List, Way);
-      
-      Put_Line("=============== Résultat ==============="); 
-      Put("Chemin le plus court entre ");
-      Put(To_String(Source.Station_Name) & " (" & Integer'Image(Source.Id) & ") et ");
-      Put_line(To_String(Destination.Station_Name) & " (" & Integer'Image(Destination.Id) & ") : ");
-      Put_Line("Depart : " & To_String(Source.Station_Name) & " (" & Integer'Image(Source.Id) & ")");
-      
-      -- Affichage des correspondances
-      Way.Iterate(Print_Way'Access);
-      Put_Line(Integer'Image(Station_Nb) & " station(s)");   
-      
-      Put_Line("Arrivée : " & To_String(Destination.Station_Name) & " (" & Integer'Image(Destination.Id) & ")" );
-      Put_Line("cout du chemin : " & Float'Image(Cost_Array(Destination.id)));
-      Put_Line("=======================================");
-      
-     
+      Display_Path(Previous_Node_List, Cost_Array, Source, Destination, Node_A, Input_Graphe);
    end AffichageBellmanFord;
    -- ==========================================================================
   
