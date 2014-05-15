@@ -79,4 +79,21 @@ package body Package_Graphe is
    end;
    -- ==========================================================================
    
+   -- ==========================================================================
+   -- Procédure pour libérer la mémoire
+   -- ==========================================================================
+   procedure Free_Memory(PGraphe : out P_Graphe; PNode_Array : out  P_Node_Array; PVertex_Array : out P_Vertex_Array) is
+   begin
+      Free_Node_Array(PNode_Array);
+      Free_Vertex_Array(PVertex_Array);      
+      if PGraphe /= null then
+	 for I in PGraphe'Range loop
+	    for K in PGraphe'Range loop
+	       Free_P_Vertex(PGraphe(I,K));
+	    end loop;
+	 end loop;
+	 Free_Graphe(PGraphe);
+      end if;
+   end;
+   
 end Package_Graphe;

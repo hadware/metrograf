@@ -51,7 +51,7 @@ package Package_Graphe is
    procedure Free_Vertex_Array is new Ada.Unchecked_Deallocation (Vertex_Array, P_Vertex_Array );
    procedure Free_P_Vertex is new Ada.Unchecked_Deallocation (Vertex, P_Vertex);
    procedure Free_Graphe is new Ada.Unchecked_Deallocation (Graphe,P_graphe );
-   
+   procedure Free_Memory(PGraphe : out P_Graphe; PNode_Array : out  P_Node_Array; PVertex_Array : out P_Vertex_Array);   
    
 end;
 
