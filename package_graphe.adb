@@ -7,13 +7,15 @@ package body Package_Graphe is
    procedure Search_Way (Source_Id : Natural; Destination_Id : Natural; Previous_Node_List :  Node_Id_Array; Way : out L_Node.List) is 
       Index : Natural := Destination_Id;
    begin
+      
       while Index /= Source_Id loop
-	 if Index /= 0 and Index /= Destination_Id then
+	 if Index /= 0  then 
 	    Index := Previous_Node_List(Index);
 	 else 
 	    exit;
 	 end if;
 	 L_Node.Prepend(Way,Index);
+	 Put_Line("dest : " & Integer'Image(Destination_id));
       end loop;
    end Search_Way;
    -- ==========================================================================
@@ -35,7 +37,6 @@ package body Package_Graphe is
 	 Current_Node : Node := Node_A(L_Node.Element(Position));
 	 Previous_Node : Node;
       begin
-	 
 	 -- Test si le Previous_Node existe
 	 if L_Node.Has_Element(L_Node.Previous(Position)) then
 	    Previous_Node := Node_A(L_Node.Element(L_Node.Previous(Position)));
@@ -56,7 +57,7 @@ package body Package_Graphe is
 	    end if;
 	    
 	    Put_Line(" --> " & " (" & Integer'Image(Current_Node.Id) & ") ligne " & To_String(Current_Line));
-	    Station_Nb := 0;
+	    Station_Nb := 1;
 	 end if;
 	 Station_Nb := Station_Nb + 1;
 	 
@@ -72,7 +73,8 @@ package body Package_Graphe is
 	 Put(To_String(Source.Station_Name) & " (" & Integer'Image(Source.Id) & ") et ");
 	 Put_line(To_String(Destination.Station_Name) & " (" & Integer'Image(Destination.Id) & ") : ");
 	 Put_Line("Depart : " & To_String(Source.Station_Name) & " (" & Integer'Image(Source.Id) & ")");
-      
+	 
+	 
 	 -- Affichage des correspondances
 	 Way.Iterate(Print_Way'Access);
 	 Put_Line(Integer'Image(Station_Nb) & " station(s)");   

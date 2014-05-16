@@ -76,7 +76,7 @@ package body BellmanFord is
    -- ==========================================================================
    procedure AffichageBellmanFord (Input_graphe : Graphe; Source : Node; Destination : Node; Node_A : P_Node_Array) is
       Cost_Array : T_Cost_Array(1..Input_Graphe'length);
-      Previous_Node_List : Node_Id_Array(1..Input_Graphe'length);
+      Previous_Node_List : Node_Id_Array(1..Input_Graphe'length) := (others => 0);
       
    begin
       Bellman(Input_Graphe, Source, Cost_Array, Previous_Node_List);
