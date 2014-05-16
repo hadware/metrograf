@@ -11,12 +11,21 @@ package body Parser is
    -- Compte le nombre d'arguments dans une chaine donnée en splittant par rapport aux espaces
    -- ==========================================================================
    function Argument_Count(Input_String : String) return Natural is
-      Slices : String_Split.Slice_Set;   
+      Slices : String_Split.Slice_Set; 
+      Regexp : String := "[ ]*(.*)[ ]*";
+      Compiled_Regexp : Pattern_Matcher := Compile(Regexp);
+      Matches : Match_Array(0..1);
+      
    begin
-      String_Split.Create (S => Slices,
-                           From => Input_String,
-                           Separators => " ",
-                           Mode       => String_Split.Multiple);
+      Match (Compiled_Regexp, Input_String, Matches);
+      declare
+	 Buffer_String : String := Slice(To_Unbounded_String(Input_String), Matches(1).First, Matches(1).Last);
+      begin
+	 String_Split.Create (S => Slices,
+			      From => Buffer_String,
+			      Separators => " ",
+			      Mode       => String_Split.Multiple);
+      end;
       return Natural(String_Split.Slice_Count(Slices));
    end;
    -- ==========================================================================
@@ -82,6 +91,7 @@ package body Parser is
       for i in Output_Vertex_Array'Range loop
 	 
          Buffer_String := To_Unbounded_String(Get_Line(Input_File));
+	Put_Line("Arguments dans l'arete : " & Integer'Image(Argument_Count(To_String(Buffer_String))));
          if Argument_Count(To_String(Buffer_String)) = 4 then 
 	    
 	    Match (Compiled_Regexp, To_String(Buffer_String), Matches);
