@@ -58,11 +58,8 @@ package body Parser is
 
       for i in Output_Node_Array'Range loop
          Buffer_String := To_Unbounded_String(Get_Line(Input_File));
-         --Put_Line(To_String(Buffer_String));
-         Match (Compiled_Regexp, To_String(Buffer_String), Matches);
-         --Put_Line("Début : " & Integer'Image(Matches(1).First) & " fin : " & Integer'Image(Matches(1).Last));
-         --Put_Line(Integer'Image(Output_Node_Array(1).Station_Name);
-         Output_Node_Array(i).Id := Integer'Value(Slice(Buffer_String, Matches(1).First, Matches(1).Last)) + 1;
+	 Match (Compiled_Regexp, To_String(Buffer_String), Matches);
+	 Output_Node_Array(i).Id := Integer'Value(Slice(Buffer_String, Matches(1).First, Matches(1).Last)) + 1;
          Output_Node_Array(i).Station_Name := To_Unbounded_String(Slice(Buffer_String, Matches(2).First, Matches(2).Last));
          Put_Line(" Nom de station : " &  To_String(Output_Node_Array(i).Station_Name) & ", noeud n° " & Integer'Image(Output_Node_Array(i).Id));
 
@@ -97,8 +94,7 @@ package body Parser is
       for i in Output_Vertex_Array'Range loop
 	 
          Buffer_String := To_Unbounded_String(Get_Line(Input_File));
-	Put_Line("Arguments dans l'arete : " & Integer'Image(Argument_Count(To_String(Buffer_String))));
-         if Argument_Count(To_String(Buffer_String)) = 4 then 
+	 if Argument_Count(To_String(Buffer_String)) = 4 then 
 	    
 	    Match (Compiled_Regexp, To_String(Buffer_String), Matches);
 	    Output_Vertex_Array(i).Source := Integer'Value(Slice(Buffer_String, Matches(1).First, Matches(1).Last)) + 1;
