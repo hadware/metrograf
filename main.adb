@@ -1,3 +1,4 @@
+
 with Bellmanford;
 use Bellmanford;
 with Dijkstra;
@@ -35,7 +36,7 @@ procedure Main is
    -- Vérifie si les valeurs des noeuds sont corrects
    procedure Check_Id(Max_Id : Integer; Id : in out Integer; Check_Bool : in out boolean ) is
    begin
-      if Id < 0 or Id > Max_Id then
+      if Id <= 0 or Id > Max_Id then
 	 Check_Bool := False;
 	 Put_Line("valeur du noeud incorrect");
       else
