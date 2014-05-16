@@ -5,6 +5,9 @@ package body Dijkstra is
    package Natural_List is new Ada.Containers.Doubly_Linked_Lists(Natural);
    use Natural_List;
    
+   -- ==========================================================================
+   -- DEBUG : Affichage d'une liste d'Id de noeuds (Naturels)
+   -- ==========================================================================
    procedure Print_List(Input_List : Natural_List.List) is
       Curseur : Natural_List.Cursor;
       Compte : Positive := 1;
@@ -16,14 +19,16 @@ package body Dijkstra is
    begin
       Input_List.Iterate(Print_Element'Access);
    end;
+   -- ==========================================================================
    
-   
+   -- ==========================================================================
+   -- Insère un élément dans une file de priorité déjà triée, vérifie si l'élément n'existe pas déjà et change sa priorité si c'est le cas
+   -- ==========================================================================
    procedure Insert_In_Sorted_List(Input_List :in out Natural_List.List; Distances : T_Cost_Array ; Element_Id : Natural) is
       Current_Element_Is_Bigger_Or_End : Boolean := False;
       Current_Element : Natural_List.Cursor;
    begin
-      Put_Line("Chibre: Insertion d'un element" & Integer'Image(Element_Id));
-      Print_List(Input_List);
+      
       --vérification si l'élément existe déjà ou non
       Current_Element := Natural_List.Find(Input_List, Element_Id, Current_Element);
       
@@ -46,8 +51,7 @@ package body Dijkstra is
 	    end if;
 	    
 	 end loop;
-	 Put_Line("penis");
-	 
+	 	 
 	 if Current_Element = Natural_List.No_Element then
 	    Natural_List.Append(Input_List, Element_Id);
 	 else
@@ -75,16 +79,15 @@ package body Dijkstra is
       end loop;
 
    end;
+   -- ==========================================================================
 
-
+   -- ==========================================================================
    -- Calcul le plus cours chemin d'un noeud source vers tout les autres noeuds du graphe
+   -- ==========================================================================
    procedure Dijkstra (Input_Graph: Graphe; Source_Id : Integer; Previous_Nodes : in out Node_Id_Array; Distances : in out T_Cost_Array) is
       Node_Number : Natural := Input_Graph'Length(1);
       Node_Queue : Natural_List.List;
       Current_Element : Natural_List.Cursor;
-
-      
-
       Connected_Node_List : Natural_List.List;
       Cursor_Connected_List : Natural_List.Cursor;
 
@@ -98,18 +101,11 @@ package body Dijkstra is
       --
       while (Not(Natural_List.Is_Empty(Node_Queue))) loop
          Buffer_Node_ID := Natural_List.First_Element(Node_Queue); -- récupération de U
-	 Put_Line("Buffer Node : " & Integer'Image(Buffer_Node_ID));
-	 Put_Line("Etat de la file avant supression du Buffer Node : ");
-	 Print_List(Node_Queue);
-         Natural_List.Delete_First(Node_Queue);
-
-         Connected_Node_List := Natural_List.Empty_List; -- Liste des noeuds connectés à U vidée avant
+	 Natural_List.Delete_First(Node_Queue);
 	 
-         Find_Connected_Nodes(Input_Graph, Buffer_Node_ID, Connected_Node_List); --récupération des node V connectées à U
-         Put_Line("Nooeuds connected trouved :");
-	 Print_List(Connected_Node_List);
+	 Connected_Node_List := Natural_List.Empty_List; -- Liste des noeuds connectés à U vidée avant
+	 Find_Connected_Nodes(Input_Graph, Buffer_Node_ID, Connected_Node_List); --récupération des node V connectées à U
 	 Cursor_Connected_List := Natural_List.First(Connected_Node_List); -- on place le curseur sur la tête
-
 
          While (Cursor_Connected_List /= Natural_List.No_Element) loop
 
@@ -117,7 +113,7 @@ package body Dijkstra is
             If Distances(Buffer_Node_ID) + Input_Graph(Buffer_Node_ID, Natural_List.Element(Cursor_Connected_List)).Cost < Distances(Natural_List.Element(Cursor_Connected_List)) then
                
 	       Distances(Natural_List.Element(Cursor_Connected_List)) := Distances(Buffer_Node_ID) + Input_Graph(Buffer_Node_ID, Natural_List.Element(Cursor_Connected_List)).Cost;
-	       Put_Line("Ajout du noeud connecte a la liste : " & Integer'Image(Natural_List.Element(Cursor_Connected_List)));
+	       
 	       Insert_In_Sorted_List(Node_Queue, Distances, Natural_List.Element(Cursor_Connected_List));
                
 	       Previous_Nodes(Natural_List.Element(Cursor_Connected_List)) := Buffer_Node_ID; -- sauvegarde la node précédente
@@ -131,8 +127,11 @@ package body Dijkstra is
       end loop;
 
    end Dijkstra;
-
-   -- Affiche le chemin le plus court entre 2 noeuds
+   -- ==========================================================================
+   
+   -- ==========================================================================
+   -- Affiche le chemin le plus court entre 2 noeuds, en utilisant l'algorithme de dijkstra
+   -- ==========================================================================
    procedure AffichageDijkstra (Input_Graph : Graphe; Source : Node; Destination : Node; Input_Node_Array : P_Node_Array) is
       Node_Number : Natural := Input_Graph'Length(1);
       Distances : T_Cost_Array(1..Node_Number) := (others => Float'Last); --on met toutes les distances à l'infini
@@ -144,4 +143,5 @@ package body Dijkstra is
       --affichage du chemin
       Display_Path(Previous_Nodes, Distances, Source, Destination, Input_Node_Array, Input_Graph);
    End;
+   -- ==========================================================================
 end;
