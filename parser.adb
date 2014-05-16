@@ -11,22 +11,28 @@ package body Parser is
    -- Compte le nombre d'arguments dans une chaine donnée en splittant par rapport aux espaces
    -- ==========================================================================
    function Argument_Count(Input_String : String) return Natural is
-      Slices : String_Split.Slice_Set; 
-      Regexp : String := "[ ]*(.*)[ ]*";
-      Compiled_Regexp : Pattern_Matcher := Compile(Regexp);
-      Matches : Match_Array(0..1);
+      Counter : Natural := 0;
+      type State is (In_Arg, Out_Of_Arg);
+      Robot : State := Out_Of_Arg;
       
    begin
-      Match (Compiled_Regexp, Input_String, Matches);
-      declare
-	 Buffer_String : String := Slice(To_Unbounded_String(Input_String), Matches(1).First, Matches(1).Last);
-      begin
-	 String_Split.Create (S => Slices,
-			      From => Buffer_String,
-			      Separators => " ",
-			      Mode       => String_Split.Multiple);
-      end;
-      return Natural(String_Split.Slice_Count(Slices));
+      for I in Input_String'Range loop
+	 case Robot is
+	    
+	    when In_Arg =>
+	       if Input_String(I) = ' 'then
+		  Robot := Out_Of_Arg;
+	       end if;
+	       
+	    when Out_Of_Arg =>
+	       if Input_String(I) /= ' ' then
+		  Counter := Counter + 1;
+		  Robot := In_Arg;
+	       end if;
+	 end case;
+      end loop;
+      
+      return Counter;
    end;
    -- ==========================================================================
    
