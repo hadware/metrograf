@@ -8,10 +8,12 @@ package body Package_Graphe is
       Index : Natural := Destination_Id;
    begin
       while Index /= Source_Id loop
-	 Index := Previous_Node_List(Index);
-	 if Index = 0 then exit;
+	 if Index /= 0 and Index /= Destination_Id then
+	    Index := Previous_Node_List(Index);
+	 else 
+	    exit;
 	 end if;
-	   L_Node.Prepend(Way,Index);
+	 L_Node.Prepend(Way,Index);
       end loop;
    end Search_Way;
    -- ==========================================================================
