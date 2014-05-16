@@ -2,10 +2,25 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Containers.Doubly_Linked_Lists;
 with GNAT.Regpat; use GNAT.Regpat;
+with GNAT.String_Split;
+use GNAT;
 
 package body Parser is
-
-
+   
+   -- ==========================================================================
+   -- Compte le nombre d'arguments dans une chaine donnée en splittant par rapport aux espaces
+   -- ==========================================================================
+   function Argument_Count(Input_String : String) return Natural is
+      Slices : String_Split.Slice_Set;   
+   begin
+      String_Split.Create (S => Slices,
+                           From => Input_String,
+                           Separators => " ",
+                           Mode       => String_Split.Multiple);
+      return Natural(String_Split.Slice_Count(Slices));
+   end;
+   -- ==========================================================================
+   
    -- ==========================================================================
    -- Récupère le tableau des noeuds à partir du fichier source
    -- ==========================================================================
@@ -55,26 +70,36 @@ package body Parser is
       Regexp_Vertex_Value : String := "[ ]*([0-9]*)[ ]+([0-9]*)[ ]+([0-9]*\.?[0-9eE+-]*)[ ]+(.*)[ ]*"; -- pour matcher les lignes des vertices
       Compiled_Regexp : Pattern_Matcher := Compile(Regexp_Vertex_Value); -- Précompilée pour ne le faire qu'une seule fois
       Matches : Match_Array(0..4); -- Tableau des bornes des chaines "matchées" dans la chaine cible
-
+      
+      Regexp_Vertex_No_Line : String := "[ ]*([0-9]*)[ ]+([0-9]*)[ ]+([0-9]*\.?[0-9eE+-]*)[ ]*"; --si il n'y a que 3 arguments (pas de ligne de traim/metro)
+      Compiled_No_Line_Regexp : Pattern_Matcher := Compile(Regexp_Vertex_No_Line);
+      Matches_No_Line : Match_Array(0..3);
    begin
 
       Put_Line("Récupération des Arêtes...");
 
-      --Put_Line("Ligne courrante " & Positive_Count'Image(Line(Input_File)));
-      -- Put_Line( Get_Line(Input_File));
-       --on positionne bien le curseur du fichier à la bonne ligne
-      --Set_Line(Input_File, 1 + Positive_Count(Node_Number));
-
+      
       for i in Output_Vertex_Array'Range loop
-
+	 
          Buffer_String := To_Unbounded_String(Get_Line(Input_File));
-         Match (Compiled_Regexp, To_String(Buffer_String), Matches);
-         Output_Vertex_Array(i).Source := Integer'Value(Slice(Buffer_String, Matches(1).First, Matches(1).Last)) + 1;
-         Output_Vertex_Array(i).Destination := Integer'Value(Slice(Buffer_String, Matches(2).First, Matches(2).Last)) + 1;
-         Output_Vertex_Array(i).Cost := Float'Value(Slice(Buffer_String, Matches(3).First, Matches(3).Last));
-         Output_Vertex_Array(i).Line := To_Unbounded_String(Slice(Buffer_String, Matches(4).First, Matches(4).Last));
-         Put_Line("Arête trouvée, de " & Integer'Image(Output_Vertex_Array(i).Source) & " à " & Integer'Image(Output_Vertex_Array(i).Destination)& ", distance " & Float'Image(Output_Vertex_Array(i).Cost)  & ", ligne " & To_String(Output_Vertex_Array(i).Line));
-
+         if Argument_Count(To_String(Buffer_String)) = 4 then 
+	    
+	    Match (Compiled_Regexp, To_String(Buffer_String), Matches);
+	    Output_Vertex_Array(i).Source := Integer'Value(Slice(Buffer_String, Matches(1).First, Matches(1).Last)) + 1;
+	    Output_Vertex_Array(i).Destination := Integer'Value(Slice(Buffer_String, Matches(2).First, Matches(2).Last)) + 1;
+	    Output_Vertex_Array(i).Cost := Float'Value(Slice(Buffer_String, Matches(3).First, Matches(3).Last));
+	    Output_Vertex_Array(i).Line := To_Unbounded_String(Slice(Buffer_String, Matches(4).First, Matches(4).Last));
+	    Put_Line("Arête trouvée, de " & Integer'Image(Output_Vertex_Array(i).Source) & " à " & Integer'Image(Output_Vertex_Array(i).Destination)& ", distance " & Float'Image(Output_Vertex_Array(i).Cost)  & ", ligne " & To_String(Output_Vertex_Array(i).Line));
+	    
+	 else
+	    
+	    Match (Compiled_No_Line_Regexp, To_String(Buffer_String), Matches_No_Line);
+	    Output_Vertex_Array(i).Source := Integer'Value(Slice(Buffer_String, Matches_No_Line(1).First, Matches_No_Line(1).Last)) + 1;
+	    Output_Vertex_Array(i).Destination := Integer'Value(Slice(Buffer_String, Matches_No_Line(2).First, Matches_No_Line(2).Last)) + 1;
+	    Output_Vertex_Array(i).Cost := Float'Value(Slice(Buffer_String, Matches_No_Line(3).First, Matches_No_Line(3).Last));
+	    Put_Line("Arête trouvée, de " & Integer'Image(Output_Vertex_Array(i).Source) & " à " & Integer'Image(Output_Vertex_Array(i).Destination)& ", distance " & Float'Image(Output_Vertex_Array(i).Cost)  & ", ligne : Aucune ligne trouvée");
+	 end if;
+	 
       end loop;
 
       return Output_Vertex_Array;
@@ -104,7 +129,9 @@ package body Parser is
    end;
    -- ==========================================================================
 
-
+   -- ==========================================================================
+   -- Charge un graphe à partir d'un fichier
+   -- ==========================================================================
    procedure Load_Graph_From_File(Filename : String; Output_Graph : in out P_Graphe; Output_Node_Array : in out P_Node_Array; Output_Vertex_array : in out P_Vertex_Array) is
 
       Buffer_String : Unbounded_String;
@@ -153,5 +180,6 @@ package body Parser is
       Close(Source_File);
 
    end;
-
+   -- ==========================================================================
+   
 end;
